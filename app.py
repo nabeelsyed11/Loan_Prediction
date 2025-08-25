@@ -1,17 +1,13 @@
-# app.py
 import streamlit as st
 import pickle
 import pandas as pd
 
-# Load trained model
-model = pickle.load(open("loan_model.pkl", "rb"))
-
-st.set_page_config(page_title="Loan Prediction App", page_icon="💰", layout="centered")
+# Load pipeline
+pipeline = pickle.load(open("loan_pipeline.pkl", "rb"))
 
 st.title("💰 Loan Prediction App")
-st.write("Enter applicant details to check loan eligibility")
 
-# Input fields
+# Input form
 gender = st.selectbox("Gender", ["Male", "Female"])
 married = st.selectbox("Married", ["Yes", "No"])
 dependents = st.selectbox("Dependents", ["0", "1", "2", "3+"])
@@ -25,7 +21,6 @@ credit_history = st.selectbox("Credit History", [0.0, 1.0])
 property_area = st.selectbox("Property Area", ["Urban", "Semiurban", "Rural"])
 
 if st.button("Predict"):
-    # Convert inputs to dataframe
     input_data = pd.DataFrame({
         'Gender': [gender],
         'Married': [married],
@@ -40,10 +35,7 @@ if st.button("Predict"):
         'Property_Area': [property_area]
     })
 
-    # Ensure preprocessing (same as in training)
-    # Example: if you used LabelEncoder or OneHotEncoder
-    # you must load and apply them here
-    prediction = model.predict(input_data)[0]
+    prediction = pipeline.predict(input_data)[0]
 
     if prediction == 1:
         st.success("✅ Loan Approved")
